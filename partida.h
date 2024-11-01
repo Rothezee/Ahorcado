@@ -13,6 +13,7 @@ typedef struct{
 }persona;
 typedef struct{
     char palabra[MAX_PALABRA];
+    int aciertos[MAX_PALABRA]; /*Arreglo en donde cada posición es 0 o 1, dependiendo si acertó esa letra*/
     int intentos;
     int puntaje;
     persona jugador;
@@ -23,30 +24,34 @@ void init(partida *p);
 void cargar_una_partida(partida *p);
 void cargar_n_partidas(partida *p, int n); /*n es la cantidad de partidas que se desean cargar*/
 void palabra_aleatoria(partida *p); /*Le asigna una palabra aleatoria de un archivo a partida.palabra*/
-char insert_letra(partida *p, char *letra); /*Ingresa una letra y comprueba si está en la palabra*/
+int insert_letra(partida *p, char letra); /*Ingresa una letra y comprueba si está en la palabra*/
 
 void init(partida *p){
+    int i=0;
     (*p).intentos = 5;
     (*p).puntaje = 0;
+    for(i=0; i<MAX_PALABRA; i++){
+        (*p).aciertos[i]=0;
+    }
 }
 
-char insert_letra(partida *p, char *letra){
-    int i=0;
-    int correct=0;
+int insert_letra(partida *p, char letra){
+    int i=0, correct=0; //repetido=0;
     for(i=0;i<strlen((*p).palabra);i++){
-        printf("%c, %c", (*p).palabra[i], *letra);
-        if((*p).palabra[i] == *letra){
-            correct++;
+        if((*p).palabra[i] == letra && (*p).aciertos[i] == 0){/*Si la letra está en la palabra y no fue acertada antes*/
+                (*p).aciertos[i] = 1;
+                (*p).puntaje = (*p).puntaje + 5;
+                correct=1;
+        }else{
+            correct=correct+0;
         }
     }
-    if(correct>0){
-            (*p).puntaje = (*p).puntaje + 5;
-            return(1);
-        }else{
-            (*p).intentos--;
-            return(0);
+    if(correct==0){
+        (*p).intentos--;
         }
+    return(correct);
 }
+
 
 
 
