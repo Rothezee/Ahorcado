@@ -16,17 +16,22 @@ void dibujo_3();
 void dibujo_4();
 void dibujo_5();
 void dibujo_6();
+void dibujo_7();
+
+
 
 /*MAIN*/
 int main()
 {
-    int op=0, i=0;
+    int op=0, i=0, letras_acertadas=0;
     char *letra=(char*)malloc(sizeof(char));
+    *letra = 'a';
     partida *p = (partida*)malloc(sizeof(partida));
 
     do{
         /*Menu de opciones*/
         init(p);
+        system("cls");
         menu_inicio();
         scanf("%d", &op); getchar();
         /*control de op*/
@@ -46,30 +51,57 @@ int main()
                     scanf("%s", (*p).palabra);
                 }
 
-                /*Dibujo de ahorcado inicial y espacios para las letras*/
-                dibujo_0();
-                printf("\t");
-                for(i=0;i<strlen((*p).palabra);i++){
-                    printf("_");
-                }
-                printf("\n");
-                printf("\t%s", (*p).palabra);
-
+                system("cls");
+                printf("\n\n\n");
                 /*Bucle dentro de la partida*/
-                while((*p).intentos!=0){
-                    printf("\n\t\tIngrese la letra: ");
-                    scanf("%c", letra); getchar();
-                    /*control de l*/
-                    if(insert_letra(p, letra)==0){
-                        printf("\n\tPifiaste! Intentos restantes: %d\n\tPuntuacion: %d", (*p).intentos, (*p).puntaje);
-                    }else{
-                        if(insert_letra(p, letra)==1){
-                        printf("la letra es correcta! : %c", *letra);
+                while((*p).intentos>=0 && letras_acertadas<strlen((*p).palabra)){
+                    /*Dibujo de ahorcado inicial y espacios para las letras*/
+                    switch((*p).intentos){
+                        case 5: dibujo_0(); break;
+                        case 4: dibujo_1(); break;
+                        case 3: dibujo_2(); break;
+                        case 2: dibujo_3(); break;
+                        case 1: dibujo_4(); break;
+                        case 0: dibujo_5(); break;
+                    }
+                /*Linea donde se mustra la plabra*/
+                    printf("\t");
+                    for(i=0;i<strlen((*p).palabra);i++){
+                        if((*p).aciertos[i]==1){
+                            printf("%c", (*p).palabra[i]);
                         }else{
-                            printf("\nError!!!!!!!!\n");
+                            printf("_");
+                        }
+                    }
+                    /*Ingreso de caracter*/
+                    printf("\n\t\tIngrese la letra: ");
+                    scanf(" %c", letra); getchar();
+                    /*control de l*/
+                    system("cls");
+                    if(insert_letra(p, *letra)==0){
+                        printf("\n\tPifiaste! Intentos restantes: %d\n\tPuntuacion: %d\n", (*p).intentos, (*p).puntaje);
+                    }else{
+                            printf("\n\tLa letra es correcta! Intentos restantes: %d\n\tPuntuacion: %d\n", (*p).intentos, (*p).puntaje);
+                    }
+                    letras_acertadas=0;
+                    for(i=0;i<strlen((*p).palabra);i++){
+                        if((*p).aciertos[i]==1){
+                            letras_acertadas++;
                         }
                     }
                 }
+                if(letras_acertadas==strlen((*p).palabra)){
+                    dibujo_7();
+                    printf("\t%s", (*p).palabra);
+                    printf("\n\t\t\tGanaste!!!\n");
+                }else{
+                    dibujo_6();
+                    printf("\n\t\tLa palabra era: %s", (*p).palabra);
+                    printf("\n\t\t\tPerdiste!\n");
+                    scanf("%s", &op);
+                }
+
+
                 break;
 
             case 2:
@@ -87,7 +119,7 @@ int main()
 
 /*FUNCIONES*/
 void menu_inicio(){
-    printf("\n\t\tBienvenido al juego del Ahorcado!\n");
+    printf("\n\t\t\tBienvenido al juego del Ahorcado!\n");
     printf("\n\t\t\tSeleccione una opcion!\n");
     printf("\n\t[1] - Jugar\n");
     printf("\t[2] - Ver tabla de puntuacion\n");
@@ -99,7 +131,6 @@ void menu_jugar(){
     printf("\t[2] - Ingresar una palabra\n");
 }
 void dibujo_0(){
-    system("cls");
     printf("\n\t+----+   \n");
     printf("\n\t|        \n");
     printf("\n\t|        \n");
@@ -107,7 +138,6 @@ void dibujo_0(){
     printf("\n\t=======  \n\n");
 }
 void dibujo_1(){
-    system("cls");
     printf("\n\t+----+   \n");
     printf("\n\t|    O   \n");
     printf("\n\t|        \n");
@@ -115,7 +145,6 @@ void dibujo_1(){
     printf("\n\t=======  \n\n");
 }
 void dibujo_2(){
-    system("cls");
     printf("\n\t+----+   \n");
     printf("\n\t|    O   \n");
     printf("\n\t|    |   \n");
@@ -123,7 +152,6 @@ void dibujo_2(){
     printf("\n\t=======  \n\n");
 }
 void dibujo_3(){
-    system("cls");
     printf("\n\t+----+   \n");
     printf("\n\t|    O   \n");
     printf("\n\t|   /|   \n");
@@ -131,28 +159,30 @@ void dibujo_3(){
     printf("\n\t=======  \n\n");
 }
 void dibujo_4(){
-    system("cls");
     printf("\n\t+----+   \n");
     printf("\n\t|    O   \n");
-    printf("\n\t|   /|\  \n");
+    printf("\n\t|   /|\\  \n");
     printf("\n\t|        \n");
     printf("\n\t=======  \n\n");
 }
 void dibujo_5(){
-    system("cls");
     printf("\n\t+----+   \n");
     printf("\n\t|    O   \n");
-    printf("\n\t|   /|\  \n");
+    printf("\n\t|   /|\\  \n");
     printf("\n\t|   /    \n");
     printf("\n\t=======  \n\n");
 }
 void dibujo_6(){
-    system("cls");
     printf("\n\t+----+   \n");
     printf("\n\t|    O   \n");
-    printf("\n\t|   /|\  \n");
-    printf("\n\t|   / \  \n");
+    printf("\n\t|   /|\\  \n");
+    printf("\n\t|   / \\  \n");
     printf("\n\t=======  \n\n");
 }
-
+void dibujo_7(){
+    printf("\n\t|  (^o^)   \n");
+    printf("\n\t|   /|\\  \n");
+    printf("\n\t|   / \\  \n");
+    printf("\n\t=======  \n\n");
+}
 
