@@ -94,6 +94,7 @@ int main()
                     dibujo_7();
                     printf("\t%s", (*p).palabra);
                     printf("\n\t\t\tGanaste!!!\n");
+                    scanf("%s", &op);
                 }else{
                     dibujo_6();
                     printf("\n\t\tLa palabra era: %s", (*p).palabra);
