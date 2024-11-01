@@ -8,17 +8,9 @@
 /*PROTOTIPOS*/
 void menu_inicio();
 void menu_jugar();
-void menu_dentro_juego();
-void dibujo_0();
-void dibujo_1();
-void dibujo_2();
-void dibujo_3();
-void dibujo_4();
-void dibujo_5();
-void dibujo_6();
-void dibujo_7();
-
-
+void dibujo();
+void espacio_palabra();
+int control(int, int, int);
 
 /*MAIN*/
 int main()
@@ -31,89 +23,55 @@ int main()
     do{
         /*Menu de opciones*/
         init(p);
-        system("cls");
         menu_inicio();
         scanf("%d", &op); getchar();
-        /*control de op*/
+        op=control(op, 1, 3); /*Control de opcion*/
 
-        while (1) {
-            if (scanf("%d", &op) != 1) {     // Verifica si la entrada es un numero
-                printf("Entrada no valida. Ingrese un numero.\n");
-                while (getchar() != '\n');   // Limpia el buffer de entrada
-            } else if (op >= 1 && op <= 3) { // Opción válida
-                break;
-            } else {
-                printf("OPCION NO VALIDA. Intente nuevamente.\n");
-            }
-        }
         switch(op){
             case 1:
                 system("cls");
                 menu_jugar();
                 scanf("%d", &op);
-
-                /*CONTROL DE OPCIONES*/
-                while (1)
-                {
-                    if (scanf("%d", &op) != 1)    // Verifica si la entrada es un numero
-                    {
-                        printf("Entrada no valida. Ingrese un numero.\n");
-                        while (getchar() != '\n');  // Limpia el buffer de entrada
-                    }
-                    else if (op == 1 || op == 2)      // Comprueba si es una opción valida
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        printf("OPCION NO VALIDA\n");
-                    }
-                }
+                op=control(op, 1, 2); /*Control de opcion*/
 
                 /*Palabra aleatoria o una palabra ingresada*/
-
                 if(op==1){
                     //palabra_aleatoria(&p);
                 }else{
                     system("cls");
                     printf("\n\t\tQue palabra desea ingresar?\n");
-                    scanf("%s", (*p).palabra);
+                    scanf("%20s", (*p).palabra);
+                    while(strlen((*p).palabra)>MAX_PALABRA){ /*Control tamaño de la palabra*/
+                        /*Habría que vaciar el arreglo palabra*/
+                        printf("\n\t\tPalabra demasiado larga! Ingrese otra!\n");
+                        scanf("%20s", (*p).palabra);
+                    }
                 }
-
-
-
                 system("cls");
                 printf("\n\n\n");
+
                 /*Bucle dentro de la partida*/
                 while((*p).intentos>=0 && letras_acertadas<strlen((*p).palabra)){
+
                     /*Dibujo de ahorcado inicial y espacios para las letras*/
-                    switch((*p).intentos){
-                        case 5: dibujo_0(); break;
-                        case 4: dibujo_1(); break;
-                        case 3: dibujo_2(); break;
-                        case 2: dibujo_3(); break;
-                        case 1: dibujo_4(); break;
-                        case 0: dibujo_5(); break;
-                    }
-                /*Linea donde se mustra la plabra*/
-                    printf("\t");
-                    for(i=0;i<strlen((*p).palabra);i++){
-                        if((*p).aciertos[i]==1){
-                            printf("%c", (*p).palabra[i]);
-                        }else{
-                            printf("_");
-                        }
-                    }
+                    dibujo((*p).intentos);
+
+                    /*Linea donde se mustra la plabra*/
+                    espacio_palabra(p);
+
                     /*Ingreso de caracter*/
                     printf("\n\t\tIngrese la letra: ");
-                    scanf(" %c", letra); getchar();
-                    /*control de l*/
+                    scanf(" %c", letra); getchar();/*Falta control de la letra ingresada*/
+                    //while((letra<'A' || letra>'z')){printf("\n\t\tCaracter invalido, ingrese la letra nuevamente: ");scanf(" %c", letra); getchar();}
                     system("cls");
+
                     if(insert_letra(p, *letra)==0){
                         printf("\n\tPifiaste! Intentos restantes: %d\n\tPuntuacion: %d\n", (*p).intentos, (*p).puntaje);
                     }else{
                             printf("\n\tLa letra es correcta! Intentos restantes: %d\n\tPuntuacion: %d\n", (*p).intentos, (*p).puntaje);
                     }
+
+                    /*Controla si el jugador acertó todas las letras*/
                     letras_acertadas=0;
                     for(i=0;i<strlen((*p).palabra);i++){
                         if((*p).aciertos[i]==1){
@@ -121,13 +79,15 @@ int main()
                         }
                     }
                 }
+
+                /*Mensaje al terminar la partida*/
                 if(letras_acertadas==strlen((*p).palabra)){
-                    dibujo_7();
+                    dibujo(7);
                     printf("\t%s", (*p).palabra);
                     printf("\n\t\t\tGanaste!!!\n");
                     scanf("%c", &op);
                 }else{
-                    dibujo_6();
+                    dibujo(6);
                     printf("\n\t\tLa palabra era: %s", (*p).palabra);
                     printf("\n\t\t\tPerdiste!\n");
                     scanf("%c", &op);
@@ -151,6 +111,7 @@ int main()
 
 /*FUNCIONES*/
 void menu_inicio(){
+    system("cls");
     printf("\n\t\t\tBienvenido al juego del Ahorcado!\n");
     printf("\n\t\t\tSeleccione una opcion!\n");
     printf("\n\t[1] - Jugar\n");
@@ -162,58 +123,80 @@ void menu_jugar(){
     printf("\n\t[1] - Palabra aleatoria\n");
     printf("\t[2] - Ingresar una palabra\n");
 }
-void dibujo_0(){
-    printf("\n\t+----+   \n");
-    printf("\n\t|        \n");
-    printf("\n\t|        \n");
-    printf("\n\t|        \n");
-    printf("\n\t=======  \n\n");
+void dibujo(int intentos){
+    switch(intentos){
+        case 5:
+            printf("\n\t+----+   \n");
+            printf("\n\t|        \n");
+            printf("\n\t|        \n");
+            printf("\n\t|        \n");
+            printf("\n\t=======  \n\n");
+            break;
+        case 4:
+            printf("\n\t+----+   \n");
+            printf("\n\t|    O   \n");
+            printf("\n\t|        \n");
+            printf("\n\t|        \n");
+            printf("\n\t=======  \n\n");
+            break;
+        case 3:
+            printf("\n\t+----+   \n");
+            printf("\n\t|    O   \n");
+            printf("\n\t|    |   \n");
+            printf("\n\t|        \n");
+            printf("\n\t=======  \n\n");
+            break;
+        case 2:
+            printf("\n\t+----+   \n");
+            printf("\n\t|    O   \n");
+            printf("\n\t|   /|   \n");
+            printf("\n\t|        \n");
+            printf("\n\t=======  \n\n");
+            break;
+        case 1:
+            printf("\n\t+----+   \n");
+            printf("\n\t|    O   \n");
+            printf("\n\t|   /|\\  \n");
+            printf("\n\t|        \n");
+            printf("\n\t=======  \n\n");
+            break;
+        case 0:
+            printf("\n\t+----+   \n");
+            printf("\n\t|    O   \n");
+            printf("\n\t|   /|\\  \n");
+            printf("\n\t|   /    \n");
+            printf("\n\t=======  \n\n");
+            break;
+        case 6:
+            printf("\n\t+----+   \n");
+            printf("\n\t|    O   \n");
+            printf("\n\t|   /|\\  \n");
+            printf("\n\t|   / \\  \n");
+            printf("\n\t=======  \n\n");
+            break;
+        case 7:
+            printf("\n\t|  (^o^)   \n");
+            printf("\n\t|   /|\\  \n");
+            printf("\n\t|   / \\  \n");
+            printf("\n\t=======  \n\n");
+            break;
+    }
 }
-void dibujo_1(){
-    printf("\n\t+----+   \n");
-    printf("\n\t|    O   \n");
-    printf("\n\t|        \n");
-    printf("\n\t|        \n");
-    printf("\n\t=======  \n\n");
+void espacio_palabra(partida *p){
+    int i=0;
+    printf("\t");
+    for(i=0;i<strlen((*p).palabra);i++){
+        if((*p).aciertos[i]==1){
+            printf("%c", (*p).palabra[i]);
+        }else{
+            printf("_");
+        }
+    }
 }
-void dibujo_2(){
-    printf("\n\t+----+   \n");
-    printf("\n\t|    O   \n");
-    printf("\n\t|    |   \n");
-    printf("\n\t|        \n");
-    printf("\n\t=======  \n\n");
-}
-void dibujo_3(){
-    printf("\n\t+----+   \n");
-    printf("\n\t|    O   \n");
-    printf("\n\t|   /|   \n");
-    printf("\n\t|        \n");
-    printf("\n\t=======  \n\n");
-}
-void dibujo_4(){
-    printf("\n\t+----+   \n");
-    printf("\n\t|    O   \n");
-    printf("\n\t|   /|\\  \n");
-    printf("\n\t|        \n");
-    printf("\n\t=======  \n\n");
-}
-void dibujo_5(){
-    printf("\n\t+----+   \n");
-    printf("\n\t|    O   \n");
-    printf("\n\t|   /|\\  \n");
-    printf("\n\t|   /    \n");
-    printf("\n\t=======  \n\n");
-}
-void dibujo_6(){
-    printf("\n\t+----+   \n");
-    printf("\n\t|    O   \n");
-    printf("\n\t|   /|\\  \n");
-    printf("\n\t|   / \\  \n");
-    printf("\n\t=======  \n\n");
-}
-void dibujo_7(){
-    printf("\n\t|  (^o^)   \n");
-    printf("\n\t|   /|\\  \n");
-    printf("\n\t|   / \\  \n");
-    printf("\n\t=======  \n\n");
+int control(int valor, int min, int max){
+    while(valor<min || valor>max){
+        printf("\n\t\tReingrese el valor!\n");
+        scanf("%d", &valor); getchar();
+    }
+    return(valor);
 }
