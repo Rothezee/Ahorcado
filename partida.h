@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #define MAX_NOMBRE 15
 #define MAX_PALABRA 20
 
@@ -17,6 +18,7 @@ typedef struct{
     int intentos;
     int puntaje;
     persona jugador;
+    time_t tiempo_finalizacion;
 }partida;
 
 /*PROTOTIPOS*/
