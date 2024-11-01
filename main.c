@@ -21,7 +21,7 @@ void dibujo_6();
 int main()
 {
     int op=0, i=0;
-    char l;
+    char *letra=(char*)malloc(sizeof(char));
     partida *p = (partida*)malloc(sizeof(partida));
 
     do{
@@ -58,13 +58,13 @@ int main()
                 /*Bucle dentro de la partida*/
                 while((*p).intentos!=0){
                     printf("\n\t\tIngrese la letra: ");
-                    scanf("%c", &l); getchar();
+                    scanf("%c", letra); getchar();
                     /*control de l*/
-                    if(insert_letra(p, l)==0){
+                    if(insert_letra(p, letra)==0){
                         printf("\n\tPifiaste! Intentos restantes: %d\n\tPuntuacion: %d", (*p).intentos, (*p).puntaje);
                     }else{
-                        if(insert_letra(&p, l)==1){
-                        printf("la letra es correcta! : %c", l);
+                        if(insert_letra(p, letra)==1){
+                        printf("la letra es correcta! : %c", *letra);
                         }else{
                             printf("\nError!!!!!!!!\n");
                         }
@@ -80,6 +80,8 @@ int main()
                 printf("\n\t\tOprima cualquier letra para salir!\n");
         }
     }while(op!=3);
+    free(p);
+    free(letra);
     return 0;
 }
 
