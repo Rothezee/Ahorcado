@@ -23,25 +23,29 @@ void init(partida *p);
 void cargar_una_partida(partida *p);
 void cargar_n_partidas(partida *p, int n); /*n es la cantidad de partidas que se desean cargar*/
 void palabra_aleatoria(partida *p); /*Le asigna una palabra aleatoria de un archivo a partida.palabra*/
-char insert_letra(partida *p, char l); /*Ingresa una letra y comprueba si está en la palabra*/
+char insert_letra(partida *p, char *letra); /*Ingresa una letra y comprueba si estÃ¡ en la palabra*/
 
 void init(partida *p){
     (*p).intentos = 5;
     (*p).puntaje = 0;
 }
 
-char insert_letra(partida *p, char l){
+char insert_letra(partida *p, char *letra){
     int i=0;
-    int tam=strlen((*p).palabra);
-    for(i=0;i<tam;i++){
-        if((*p).palabra[i] == l){
+    int correct=0;
+    for(i=0;i<strlen((*p).palabra);i++){
+        printf("%c, %c", (*p).palabra[i], *letra);
+        if((*p).palabra[i] == *letra){
+            correct++;
+        }
+    }
+    if(correct>0){
             (*p).puntaje = (*p).puntaje + 5;
             return(1);
         }else{
             (*p).intentos--;
             return(0);
         }
-    }
 }
 
 
