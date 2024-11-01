@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "partida.h"
 #define MAX_DIBUJO 15
 
@@ -82,11 +83,13 @@ int main()
 
                 /*Mensaje al terminar la partida*/
                 if(letras_acertadas==strlen((*p).palabra)){
+                    p->tiempo_finalizacion = time(NULL);
                     dibujo(7);
                     printf("\t%s", (*p).palabra);
                     printf("\n\t\t\tGanaste!!!\n");
                     scanf("%c", &op);
                 }else{
+                    p->tiempo_finalizacion = time(NULL);
                     dibujo(6);
                     printf("\n\t\tLa palabra era: %s", (*p).palabra);
                     printf("\n\t\t\tPerdiste!\n");
