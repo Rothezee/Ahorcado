@@ -1,0 +1,13 @@
+0 Elefante
+1 Teclado
+2 Salchicha
+3 Monitor
+4 Mango
+5 Biblioteca
+6 Copa
+7 Pan
+8 Panfleto
+9 Escritorio
+10 Crema
+11 Banco
+12 Mesa
