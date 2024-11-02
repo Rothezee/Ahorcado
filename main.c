@@ -12,6 +12,7 @@ void menu_jugar();
 void dibujo();
 void espacio_palabra();
 int control(int, int, int);
+void imprimir_fecha_formato(time_t tiempo);
 
 /*MAIN*/
 int main()
@@ -98,6 +99,9 @@ int main()
                     printf("\n\t\t\tPerdiste!\n");
                     scanf("%c", &op);
                 }
+
+                printf("\n\tFecha y hora de finalizacion: ";
+                imprimir_fecha_formato(p->tiempo_finalizacion);getchar();
 
 
                 break;
@@ -206,3 +210,15 @@ int control(int valor, int min, int max){
     }
     return(valor);
 }
+
+void imprimir_fecha_formato(time_t tiempo) {
+    struct tm *tiempo_local = localtime(&tiempo);
+    printf("%02d/%02d/%04d %02d:%02d:%02d\n",
+        tiempo_local->tm_mday,
+        tiempo_local->tm_mon + 1,
+        tiempo_local->tm_year + 1900,
+        tiempo_local->tm_hour,
+        tiempo_local->tm_min,
+        tiempo_local->tm_sec);
+}
+        
