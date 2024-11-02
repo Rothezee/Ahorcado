@@ -63,7 +63,10 @@ int main()
                     /*Ingreso de caracter*/
                     printf("\n\t\tIngrese la letra: ");
                     scanf(" %c", letra); getchar();/*Falta control de la letra ingresada*/
-                    //while((letra<'A' || letra>'z')){printf("\n\t\tCaracter invalido, ingrese la letra nuevamente: ");scanf(" %c", letra); getchar();}
+                    while((*letra<'A' || *letra>'z')){
+                        printf("\n\t\tCaracter invalido, ingrese la letra nuevamente: ");
+                        scanf(" %c", letra); getchar();
+                    }
                     system("cls");
 
                     if(insert_letra(p, *letra)==0){
