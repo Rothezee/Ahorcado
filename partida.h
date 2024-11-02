@@ -40,7 +40,7 @@ void init(partida *p){
 int insert_letra(partida *p, char letra){
     int i=0, correct=0; //repetido=0;
     for(i=0;i<strlen((*p).palabra);i++){
-        if((*p).palabra[i] == letra && (*p).aciertos[i] == 0){/*Si la letra está en la palabra y no fue acertada antes*/
+        if((((*p).palabra[i] == letra)||((*p).palabra[i] == letra+32)||((*p).palabra[i] == letra-32)) && (*p).aciertos[i] == 0){/*Si la letra está en la palabra y no fue acertada antes*/
                 (*p).aciertos[i] = 1;
                 (*p).puntaje = (*p).puntaje + 5;
                 correct=1;
