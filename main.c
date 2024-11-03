@@ -43,6 +43,7 @@ int main()
                     system("cls");
                     printf("\n\t\tQue palabra desea ingresar?\n");
                     scanf("%20s", (*p).palabra);
+                    escribirEnArchivo(auxc);
                     while(strlen((*p).palabra)>MAX_PALABRA){ /*Control tamaño de la palabra*/
                         /*Habría que vaciar el arreglo palabra*/
                         printf("\n\t\tPalabra demasiado larga! Ingrese otra!\n");
