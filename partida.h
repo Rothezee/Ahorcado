@@ -215,9 +215,10 @@ void palabra_aleatoria(partida *p) {
 
     // Leer las palabras en el arreglo
     int i = 0;
-    while (fgets(buffer, sizeof(buffer), file) != NULL && i < count) {
+    int numero;
+    while (fscanf(file, "%d %s", &numero, buffer) == 2 && i < count) {
         // Eliminar el salto de línea
-        buffer[strcspn(buffer, "\n")] = 0;
+        buffer[strcspn(buffer, "\n")] = 0; // Esto es redundante aquí, ya que fscanf no lo incluye
         palabras[i] = malloc((strlen(buffer) + 1) * sizeof(char));
         if (palabras[i] == NULL) {
             fprintf(stderr, "Error al asignar memoria para la palabra.\n");
