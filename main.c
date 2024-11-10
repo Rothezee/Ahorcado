@@ -67,6 +67,7 @@ int main()
                     printf("\n\t\tNombre de avatar demasiado largo! Ingrese otro!\n\t");
                     scanf("%s", p->jugador.jugador_nombre_avatar);getchar();
                 }
+                op_aux = 0;
                 while(isOss(*l) != 0 && op_aux != 1){
 
                     if((strcmp(copyLP(l).jugador_nombre_avatar,p->jugador.jugador_nombre_avatar) == 0)){ /*Validacion para que el avatar no se repita*/
@@ -206,7 +207,7 @@ int main()
                     system("cls");
                     printf("\n\tIngrese el nombre del avatar del jugador: ");
                     scanf("%s", avatar_buscar);getchar();
-                    if((tamanio_archivo("jugadores.txt", partidas, avatar_buscar)) > 0 ){
+                    if((cant_partidas = tamanio_archivo("jugadores.txt", partidas, avatar_buscar)) > 0 ){
                         printf("\t\tPuntaje\n", avatar_buscar);
                         for (i = 0; i < cant_partidas - 1; i++) { /*Ordena el arreglo del mayor puntaje al menor*/
                             for (j = i + 1; j < cant_partidas; j++) { /*Para tener acceso a la posicion i + 1*/
@@ -217,7 +218,7 @@ int main()
                                 }
                             }
                         }
-                        for(i=0; i<tamanio_archivo("jugadores.txt", partidas, avatar_buscar); i++){
+                        for(i=0; i<cant_partidas; i++){
                             printf("\t%d\t\t%s\t\t\t%.2f\n",i+1,partidas[i].jugador.jugador_nombre_avatar,calcular_puntaje(&partidas[i],0));
                         }
                     }else{
