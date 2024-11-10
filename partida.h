@@ -29,7 +29,7 @@ void cargar_n_partidas(partida *p, int n); /*n es la cantidad de partidas que se
 void palabra_aleatoria(partida *p); /*Le asigna una palabra aleatoria de un archivo a partida.palabra*/
 int insert_letra(partida *p, char letra); /*Ingresa una letra y comprueba si esta en la palabra*/
 float calcular_puntaje(partida *p, int i); /*Funcion recursiva que calcula el puntaje*/
-int escribirEnArchivo(const char *texto); /*Escribe en el archivo la palabra que ingreso el usuario*/
+int escribirEnArchivo(char *texto); /*Escribe en el archivo la palabra que ingreso el usuario*/
 int leer_partidas(const char *nombre, partida p[]); /*lee un archivo y guarda los datos en un arreglo*/
 float calcular_puntaje_total(partida *p, const char *n); /*calcula el puntaje entre todos los juegos de un jugador*/
 int borrar_partida (partida *);
@@ -75,13 +75,13 @@ int borrar_partida(partida *p) {
     FILE *F = fopen("jugadores.txt", "r");
     if (F == NULL) {
         perror("No se pudo abrir el archivo jugadores.txt");
-        return;
+        return 1;
     }
     FILE *F_AUX = fopen("temp.txt", "w");
     if (F_AUX == NULL) {
         perror("No se pudo crear el archivo temporal");
         fclose(F);
-        return;
+        return 1;
     }
 
     char linea[256];
@@ -123,12 +123,12 @@ int borrar_partida(partida *p) {
     }
 }
 /*ESTE BLOQUE GUARDA LAS PALABRAS INGRESADAS POR EL USUARIO*/
-int escribirEnArchivo(const char *texto) { //devuelve 0 si se escribio en el archivo o 1 si ya esta cargada
+int escribirEnArchivo(char *texto) { //devuelve 0 si se escribio en el archivo o 1 si ya esta cargada
     FILE *archivo;
     int ultimoNumero = 0;
     char palabra[MAX_PALABRA];
 
-    archivo = fopen("data.txt", "r");
+    archivo = fopen("precarga.txt", "r");
     if (archivo != NULL) {
         int numero;
         // Leer el archivo l�nea por l�nea
@@ -144,9 +144,9 @@ int escribirEnArchivo(const char *texto) { //devuelve 0 si se escribio en el arc
 
     int nuevoNumero = ultimoNumero + 1;
 
-    archivo = fopen("data.txt", "a");
+    archivo = fopen("precarga.txt", "a");
     if (archivo == NULL) {
-        return;
+        return 1;
     }
 
     fprintf(archivo,"%d %s\n", nuevoNumero, texto);
@@ -181,32 +181,75 @@ int insert_letra(partida *p, char letra){
     return(correct);
 }
 void palabra_aleatoria(partida *p) {
-    srand(time(NULL)); // Cambia la semilla para generar numeros diferentes cada vez
-
-    int min = 0, max = 12;
-    int random_index = (rand() % (max - min + 1)) + min; // Genera un indice aleatorio entre min y max
-
-    FILE *file = fopen("data.txt", "r");
+    FILE *file = fopen("precarga.txt", "r");
     if (file == NULL) {
         fprintf(stderr, "Error al abrir el archivo de palabras.\n");
         strcpy(p->palabra, "No encontrado");
         return;
     }
 
-    int number;
-    strcpy(p->palabra, "No encontrado"); // Valor por defecto en caso de no encontrar la palabra
-
-    // Leer linea por linea hasta encontrar el indice aleatorio
-    while (fscanf(file, "%d %s", &number, p->palabra) == 2) {
-        if (number == random_index) {
-            fclose(file);
-            return; // La palabra correcta ya esta en p->palabra
-        }
+    // Contar cuántas palabras hay en el archivo
+    char buffer[MAX_PALABRA];
+    int count = 0;
+    while (fgets(buffer, sizeof(buffer), file) != NULL) {
+        count++;
     }
 
+    // Volver al inicio del archivo
+    rewind(file);
 
+    // Si no hay palabras, manejar el error
+    if (count == 0) {
+        fclose(file);
+        strcpy(p->palabra, "No encontrado");
+        return;
+    }
+
+    // Crear un arreglo para almacenar las palabras
+    char **palabras = malloc(count * sizeof(char *));
+    if (palabras == NULL) {
+        fprintf(stderr, "Error al asignar memoria.\n");
+        fclose(file);
+        return;
+    }
+
+    // Leer las palabras en el arreglo
+    int i = 0;
+    while (fgets(buffer, sizeof(buffer), file) != NULL && i < count) {
+        // Eliminar el salto de línea
+        buffer[strcspn(buffer, "\n")] = 0;
+        palabras[i] = malloc((strlen(buffer) + 1) * sizeof(char));
+        if (palabras[i] == NULL) {
+            fprintf(stderr, "Error al asignar memoria para la palabra.\n");
+            // Liberar memoria previamente asignada
+            for (int j = 0; j < i; j++) {
+                free(palabras[j]);
+            }
+            free(palabras);
+            fclose(file);
+            return;
+        }
+        strcpy(palabras[i], buffer);
+        i++;
+    }
+
+    // Cerrar el archivo
     fclose(file);
+
+    // Generar un índice aleatorio
+    srand(time(NULL));
+    int random_index = rand() % count;
+
+    // Asignar la palabra aleatoria a la partida
+    strcpy(p->palabra, palabras[random_index]);
+
+    // Liberar la memoria
+    for (int j = 0; j < count; j++) {
+        free(palabras[j]);
+    }
+    free(palabras);
 }
+
 float calcular_puntaje(partida *p, int i){
     if (i > strlen((*p).palabra)) {
         return 0.0;
@@ -227,7 +270,7 @@ int leer_partidas(const char *nombre, partida p[]){
     char fecha[20];
     int i = 0,j,flag;
     if(archivo == NULL){
-        return;
+        return 1;
     }
     while(fscanf(archivo,"%s %s %s %s %f\n",p[i].jugador.jugador_nombre,p[i].jugador.jugador_nombre_avatar,fecha,fecha,&p[i].puntaje_letras[0]) == 5){
         struct tm t;
@@ -255,7 +298,7 @@ int tamanio_archivo(const char *nombre, partida p[], char avatar[]){
     char fecha[20];
     int i = 0;
     if(archivo == NULL){
-        return;
+        return 1;
     }
     while(fscanf(archivo,"%s %s %s %s %f\n",p[i].jugador.jugador_nombre,p[i].jugador.jugador_nombre_avatar,fecha,fecha,&p[i].puntaje_letras[0]) == 5){
         struct tm t;
@@ -276,7 +319,7 @@ float calcular_puntaje_total(partida *p, const char *n){
     char nombre[MAX_NOMBRE];
     float total = 0, e;
     if(archivo == NULL){
-        return;
+        return 1;
     }
     while(fscanf(archivo,"%*s %s %*s %*s %f\n",nombre, &e) == 2){
         if(strcmp(p->jugador.jugador_nombre_avatar,nombre)==0){
