@@ -38,7 +38,7 @@ int main()
         system("cls");
         menu_inicio();
         printf("\t");scanf("%d", &op); getchar();
-        op=control(op, 1, 3); /*Control de opcion*/
+        op=control(op, 1, 5); /*Control de opcion*/
         /*control de op*/
 
         switch(op){
@@ -278,7 +278,7 @@ void menu_inicio(){
     printf("\t[2] - Ver tabla de puntuacion\n");
     printf("\t[3] - Ver puntuacion de jugador\n");
     printf("\t[4] - Eliminar una partida\n");
-    printf("\t[4] - Salir\n");
+    printf("\t[5] - Salir\n");
 }
 void menu_jugar(){
     printf("\n\t\tElija con que palabra desea jugar!\n");
