@@ -13,7 +13,7 @@ void menu_inicio();
 void menu_jugar();
 void menu_dentro_juego();
 void menu_volver_a_jugar();
-void dibujo(int );
+void dibujo();
 void espacio_palabra();
 int control(int, int, int);
 void imprimir_fecha_formato(time_t tiempo);
@@ -22,23 +22,14 @@ void imprimir_fecha_formato(time_t tiempo);
 /*MAIN*/
 int main()
 {
-    int op=0, op_aux=0, i=0, j, x=0, cantP, letras_acertadas, cant_partidas;
+    int op=0, op_aux=0, i=0, j, letras_acertadas, cant_partidas;
     char letras_erradas[5],auxc[MAX_PALABRA+1], avatar_buscar[MAX_NOMBRE], fecha_Borrar[20];
     char *letra=(char*)malloc(sizeof(char));
-    if (letra==NULL){
-        printf("\nEspacio insuficiente.\n"); exit(1);
-    }
     *letra = 'a';
     partida *p = (partida*)malloc(sizeof(partida));
     partida partidas[MAX_PARTIDAS], auxp;
     persona *persona_mostrar = (persona*)malloc(sizeof(persona));
-    if (persona_mostrar==NULL){
-        printf("\nEspacio insuficiente.\n"); exit(1);
-    }
     Lista *l = (Lista*)malloc(sizeof(Lista));
-    if (l==NULL){
-        printf("\nEspacio insuficiente.\n"); exit(1);
-    }
     initLP(l);
     cargar_jugadores(l,"jugadores.txt");
 
@@ -47,12 +38,12 @@ int main()
         system("cls");
         menu_inicio();
         printf("\t");scanf("%d", &op); getchar();
-        op=control(op, 1, 5); /*Control de opcion*/
+        op=control(op, 1, 3); /*Control de opcion*/
         /*control de op*/
 
         switch(op){
             case 1:
-                /*Informaci�n del jugador*/
+                /*Informacin del jugador*/
                 system("cls");
                 printf("\n\tIngrese su nombre:\n\t");
                 scanf("%s", p->jugador.jugador_nombre); getchar();
@@ -272,12 +263,10 @@ int main()
         }
 
     }while(op!=5);
-
     free((void*)p);
     free((void*)letra);
     free((void*)l);
     free((void*)persona_mostrar);
-
     return 0;
 }
 
@@ -287,9 +276,9 @@ void menu_inicio(){
     printf("\n\t\t\tSeleccione una opcion!\n");
     printf("\n\t[1] - Jugar\n");
     printf("\t[2] - Ver tabla de puntuacion\n");
-    printf("\t[3] - Ver partidas de un jugador\n");
+    printf("\t[3] - Ver puntuacion de jugador\n");
     printf("\t[4] - Eliminar una partida\n");
-    printf("\t[5] - Salir\n");
+    printf("\t[4] - Salir\n");
 }
 void menu_jugar(){
     printf("\n\t\tElija con que palabra desea jugar!\n");
